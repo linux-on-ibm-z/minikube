@@ -98,14 +98,14 @@ out/minikube$(IS_EXE): out/minikube-$(GOOS)-$(GOARCH)$(IS_EXE)
 	cp $< $@
 
 out/localkube.d:
-	GOOS=linux GOARCH=amd64 $(MAKEDEPEND) out/localkube $(ORG) $(LOCALKUBEFILES) $^ > $@
+	GOOS=linux GOARCH=s390x $(MAKEDEPEND) out/localkube $(ORG) $(LOCALKUBEFILES) $^ > $@
 
 -include out/localkube.d
 out/localkube:
 ifeq ($(LOCALKUBE_BUILD_IN_DOCKER),y)
 	$(call DOCKER,$(BUILD_IMAGE),/usr/bin/make $@)
 else
-	CGO_ENABLED=1 go build -ldflags=$(LOCALKUBE_LDFLAGS) -o $(BUILD_DIR)/localkube ./cmd/localkube
+	CGO_ENABLED=1 GOARCH=s390x go build -ldflags=$(LOCALKUBE_LDFLAGS) -o $(BUILD_DIR)/localkube ./cmd/localkube
 endif
 
 out/minikube-windows-amd64.exe: out/minikube-windows-amd64
@@ -123,6 +123,14 @@ ifneq ($(GOPATH)/src/$(REPOPATH),$(PWD))
 	$(warning Warning: Building minikube outside the GOPATH, should be $(GOPATH)/src/$(REPOPATH) but is $(PWD))
 endif
 	GOOS=$* go build -tags "$(MINIKUBE_BUILD_TAGS)" -ldflags="$(MINIKUBE_LDFLAGS) $(K8S_VERSION_LDFLAGS)" -a -o $@ k8s.io/minikube/cmd/minikube
+endif
+
+# Building Binaries for s390x
+out/minikube-linux-s390x: pkg/minikube/assets/assets.go $(shell $(MINIKUBEFILES))
+ifeq ($(MINIKUBE_BUILD_IN_DOCKER),y)
+	$(call DOCKER,$(BUILD_IMAGE),/usr/bin/make $@)
+else
+	GOOS=linux GOARCH=s390x go build -tags "$(MINIKUBE_BUILD_TAGS)" -ldflags="$(MINIKUBE_LDFLAGS) $(K8S_VERSION_LDFLAGS)" -a -o $@ k8s.io/minikube/cmd/minikube
 endif
 
 .PHONY: e2e-%-amd64
@@ -207,7 +215,7 @@ $(GOPATH)/bin/go-bindata:
 	GOBIN=$(GOPATH)/bin go get github.com/jteeuwen/go-bindata/...
 
 .PHONY: cross
-cross: out/minikube-linux-amd64 out/minikube-darwin-amd64 out/minikube-windows-amd64.exe
+cross: out/minikube-linux-amd64 out/minikube-darwin-amd64 out/minikube-windows-amd64.exe out/minikube-linux-s390x
 
 .PHONY: e2e-cross
 e2e-cross: e2e-linux-amd64 e2e-darwin-amd64 e2e-windows-amd64.exe
@@ -335,7 +343,7 @@ out/storage-provisioner:
 
 .PHONY: storage-provisioner-image
 storage-provisioner-image: out/storage-provisioner
-	docker build -t $(REGISTRY)/storage-provisioner:$(STORAGE_PROVISIONER_TAG) -f deploy/storage-provisioner/Dockerfile .
+	docker build -t $(REGISTRY)/storage-provisioner-s390x:$(STORAGE_PROVISIONER_TAG) -f deploy/storage-provisioner/Dockerfile .
 
 .PHONY: push-storage-provisioner-image
 push-storage-provisioner-image: storage-provisioner-image

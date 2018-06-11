@@ -131,7 +131,7 @@ func GetProfileFile(profile string) string {
 }
 
 var LocalkubeDownloadURLPrefix = "https://storage.googleapis.com/minikube/k8sReleases/"
-var LocalkubeLinuxFilename = "localkube-linux-amd64"
+var LocalkubeLinuxFilename = "localkube-linux-s390x"
 
 // DockerAPIVersion is the API version implemented by Docker running in the minikube VM.
 const DockerAPIVersion = "1.23"
@@ -185,7 +185,7 @@ const (
 )
 
 func GetKubernetesReleaseURL(binaryName, version string) string {
-	return fmt.Sprintf("https://storage.googleapis.com/kubernetes-release/release/%s/bin/linux/amd64/%s", version, binaryName)
+	return fmt.Sprintf("https://storage.googleapis.com/kubernetes-release/release/%s/bin/linux/s390x/%s", version, binaryName)
 }
 
 func GetKubernetesReleaseURLSha1(binaryName, version string) string {
@@ -198,49 +198,49 @@ const FileScheme = "file"
 
 var LocalkubeCachedImages = []string{
 	// Dashboard
-	"k8s.gcr.io/kubernetes-dashboard-amd64:v1.8.1",
+	"k8s.gcr.io/kubernetes-dashboard-s390x:v1.8.1",
 
 	// DNS
-	"k8s.gcr.io/k8s-dns-kube-dns-amd64:1.14.5",
-	"k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
-	"k8s.gcr.io/k8s-dns-sidecar-amd64:1.14.5",
+	"k8s.gcr.io/k8s-dns-kube-dns-s390x:1.14.5",
+	"k8s.gcr.io/k8s-dns-dnsmasq-nanny-s390x:1.14.5",
+	"k8s.gcr.io/k8s-dns-sidecar-s390x:1.14.5",
 
 	// Addon Manager
-	"k8s.gcr.io/kube-addon-manager:v6.5",
+	"k8s.gcr.io/kube-addon-manager-s390x:v6.5",
 
 	// Pause
-	"k8s.gcr.io/pause-amd64:3.0",
+	"k8s.gcr.io/pause-s390x:3.0",
 
 	//Storage Provisioner
-	"gcr.io/k8s-minikube/storage-provisioner:v1.8.0",
+	"gcr.io/k8s-minikube/storage-provisioner-s390x:v1.8.0",
 }
 
 func GetKubeadmCachedImages(version string) []string {
 	return []string{
 		// Dashboard
-		"k8s.gcr.io/kubernetes-dashboard-amd64:v1.8.1",
+		"k8s.gcr.io/kubernetes-dashboard-s390x:v1.8.1",
 
 		// Addon Manager
-		"k8s.gcr.io/kube-addon-manager:v6.5",
+		"k8s.gcr.io/kube-addon-manager-s390x:v6.5",
 
 		// Pause
-		"k8s.gcr.io/pause-amd64:3.0",
+		"k8s.gcr.io/pause-s390x:3.0",
 
 		// DNS
-		"k8s.gcr.io/k8s-dns-kube-dns-amd64:1.14.4",
-		"k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64:1.14.4",
-		"k8s.gcr.io/k8s-dns-sidecar-amd64:1.14.4",
+		"k8s.gcr.io/k8s-dns-kube-dns-s390x:1.14.4",
+		"k8s.gcr.io/k8s-dns-dnsmasq-nanny-s390x:1.14.4",
+		"k8s.gcr.io/k8s-dns-sidecar-s390x:1.14.4",
 
 		// etcd
-		"k8s.gcr.io/etcd-amd64:3.0.17",
+		"k8s.gcr.io/etcd-s390x:3.0.17",
 
-		"k8s.gcr.io/kube-proxy-amd64:" + version,
-		"k8s.gcr.io/kube-scheduler-amd64:" + version,
-		"k8s.gcr.io/kube-controller-manager-amd64:" + version,
-		"k8s.gcr.io/kube-apiserver-amd64:" + version,
+		"k8s.gcr.io/kube-proxy-s390x:" + version,
+		"k8s.gcr.io/kube-scheduler-s390x:" + version,
+		"k8s.gcr.io/kube-controller-manager-s390x:" + version,
+		"k8s.gcr.io/kube-apiserver-s390x:" + version,
 
 		//Storage Provisioner
-		"gcr.io/k8s-minikube/storage-provisioner:v1.8.0",
+		"gcr.io/k8s-minikube/storage-provisioner-s390x:v1.8.0",
 	}
 }
 

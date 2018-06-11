@@ -12,6 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM scratch
+FROM s390x/ubuntu:16.04
 COPY out/storage-provisioner storage-provisioner
 CMD ["/storage-provisioner"]
