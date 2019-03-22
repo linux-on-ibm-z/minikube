@@ -51,14 +51,10 @@ func GetMinipath() string {
 }
 
 func SupportedArchTag(hasTag bool) string {
-	if runtime.GOARCH == "s390x" {
-		return "-s390x:"
+	if runtime.GOARCH == "amd64" && hasTag == false {
+		return ":"
 	} else {
-		if hasTag == true {
-			return "-amd64:"
-		} else {
-			return ":"
-		}
+		return "-" + runtime.GOARCH + ":"
 	}
 }
 

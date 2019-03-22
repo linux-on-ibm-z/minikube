@@ -107,13 +107,13 @@ else
 endif
 .PHONY: makedeploys
 makedeploys:
-	sed "s|\-IMAGETAG_NONE|$(IMAGETAG_NONE)|g" deploy/addons/addon-manager.tmp > deploy/addons/addon-manager.yaml
-	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/dashboard/dashboard-dp.tmp > deploy/addons/dashboard/dashboard-dp.yaml
-	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/heapster/heapster-rc.tmp > deploy/addons/heapster/heapster-rc.yaml
-	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/heapster/influx-grafana-rc.tmp > deploy/addons/heapster/influx-grafana-rc.yaml
-	sed "s|\-IMAGETAG_NONE|$(IMAGETAG_NONE)|g" deploy/addons/ingress/ingress-dp.tmp > deploy/addons/ingress/ingress-dp.yaml
-	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/metrics-server/metrics-server-deployment.tmp > deploy/addons/metrics-server/metrics-server-deployment.yaml
-	sed "s|\-IMAGETAG_NONE|$(IMAGETAG_NONE)|g" deploy/addons/storage-provisioner/storage-provisioner.tmp > deploy/addons/storage-provisioner/storage-provisioner.yaml
+	sed "s|\-IMAGETAG_NONE|$(IMAGETAG_NONE)|g" deploy/addons/addon-manager.template > deploy/addons/addon-manager.yaml
+	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/dashboard/dashboard-dp.template > deploy/addons/dashboard/dashboard-dp.yaml
+	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/heapster/heapster-rc.template > deploy/addons/heapster/heapster-rc.yaml
+	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/heapster/influx-grafana-rc.template > deploy/addons/heapster/influx-grafana-rc.yaml
+	sed "s|\-IMAGETAG_NONE|$(IMAGETAG_NONE)|g" deploy/addons/ingress/ingress-dp.template > deploy/addons/ingress/ingress-dp.yaml
+	sed "s|\-IMAGETAG|$(IMAGETAG)|g" deploy/addons/metrics-server/metrics-server-deployment.template > deploy/addons/metrics-server/metrics-server-deployment.yaml
+	sed "s|\-IMAGETAG_NONE|$(IMAGETAG_NONE)|g" deploy/addons/storage-provisioner/storage-provisioner.template > deploy/addons/storage-provisioner/storage-provisioner.yaml
 
 out/minikube$(IS_EXE): out/minikube-$(GOOS)-$(GOARCH)$(IS_EXE)
 	cp $< $@
@@ -340,6 +340,7 @@ out/storage-provisioner:
 	GOOS=linux go build -o $(BUILD_DIR)/storage-provisioner -ldflags=$(PROVISIONER_LDFLAGS) cmd/storage-provisioner/main.go
 
 .PHONY: storage-provisioner-image
+#For s390x storage-provisioner-image fails to come up in k8s,so created Dockerfile-s390x with base image to s390x/ubuntu to solve this.
 storage-provisioner-image: out/storage-provisioner
 ifeq ($(GOARCH),s390x)
 	docker build -t $(REGISTRY)/storage-provisioner-s390x:$(STORAGE_PROVISIONER_TAG) -f deploy/storage-provisioner/Dockerfile-s390x .
