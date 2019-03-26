@@ -224,6 +224,14 @@ const DriverNone = "none"
 // FileScheme is the file scheme
 const FileScheme = "file"
 
+func SupportedArchTag(hasTag bool) string {
+	if runtime.GOARCH == "amd64" && hasTag == false {
+		return ":"
+	} else {
+		return "-" + runtime.GOARCH + ":"
+	}
+}
+
 // GetKubeadmCachedImages gets the images to cache for kubeadm for a version
 func GetKubeadmCachedImages(imageRepository string, kubernetesVersionStr string) (string, []string) {
 	minikubeRepository := imageRepository
@@ -343,7 +351,7 @@ func GetKubeadmCachedImages(imageRepository string, kubernetesVersionStr string)
 
 	images = append(images, []string{
 		imageRepository + "kubernetes-dashboard-amd64:v1.10.1",
-		imageRepository + "kube-addon-manager:v8.6",
+		imageRepository + "kube-addon-manager" + SupportedArchTag(false) + "v8.6",
 		minikubeRepository + "storage-provisioner:v1.8.1",
 	}...)
 

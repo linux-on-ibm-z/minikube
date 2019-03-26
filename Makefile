@@ -99,6 +99,17 @@ endif
 ifeq ($(GOOS),windows)
 	IS_EXE = ".exe"
 endif
+ifeq ($(GOARCH),amd64)
+	IMAGETAG ?= -amd64
+	IMAGETAG_NONE ?=
+else
+	IMAGETAG ?= -$(GOARCH)
+	IMAGETAG_NONE ?= -$(GOARCH)
+endif
+.PHONY: makedeploys
+makedeploys:
+	sed "s|\-IMAGETAG_NONE|$(IMAGETAG_NONE)|g" deploy/addons/addon-manager.template > deploy/addons/addon-manager.yaml
+
 out/minikube$(IS_EXE): out/minikube-$(GOOS)-$(GOARCH)$(IS_EXE)
 	cp $< $@
 
@@ -109,7 +120,9 @@ out/minikube.d: pkg/minikube/assets/assets.go
 	$(MAKEDEPEND) out/minikube-$(GOOS)-$(GOARCH) $(ORG) $^ $(MINIKUBEFILES) > $@
 
 -include out/minikube.d
-out/minikube-%: pkg/minikube/assets/assets.go
+
+.PHONY: out/minikube-%
+out/minikube-%: makedeploys pkg/minikube/assets/assets.go
 ifeq ($(MINIKUBE_BUILD_IN_DOCKER),y)
 	$(call DOCKER,$(BUILD_IMAGE),/usr/bin/make $@)
 else
