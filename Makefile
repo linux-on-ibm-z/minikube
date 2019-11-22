@@ -158,9 +158,13 @@ out/minikube-linux-x86_64: out/minikube-linux-amd64
 out/minikube-linux-aarch64: out/minikube-linux-arm64
 	cp $< $@
 
-.PHONY: minikube-linux-amd64 minikube-linux-arm64 minikube-darwin-amd64 minikube-windows-amd64.exe
+out/minikube-linux-z-arch: out/minikube-linux-s390x
+	cp $< $@
+
+.PHONY: minikube-linux-amd64 minikube-linux-arm64 minikube-linux-s390x minikube-darwin-amd64 minikube-windows-amd64.exe
 minikube-linux-amd64: out/minikube-linux-amd64 ## Build Minikube for Linux 64bit
 minikube-linux-arm64: out/minikube-linux-arm64 ## Build Minikube for ARM 64bit
+minikube-linux-s390x: out/minikube-linux-s390x ## Build Minikube for s390x 64bit
 minikube-darwin-amd64: out/minikube-darwin-amd64 ## Build Minikube for Darwin 64bit
 minikube-windows-amd64.exe: out/minikube-windows-amd64.exe ## Build Minikube for Windows 64bit
 
@@ -283,7 +287,7 @@ endif
 	@sed -i -e 's/Json/JSON/' $@ && rm -f ./-e
 
 .PHONY: cross
-cross: minikube-linux-amd64 minikube-linux-arm64 minikube-darwin-amd64 minikube-windows-amd64.exe ## Build minikube for all platform
+cross: minikube-linux-amd64 minikube-linux-arm64 minikube-linux-s390x minikube-darwin-amd64 minikube-windows-amd64.exe ## Build minikube for all platform
 
 .PHONY: windows
 windows: minikube-windows-amd64.exe ## Build minikube for Windows 64bit
@@ -300,6 +304,7 @@ e2e-cross: e2e-linux-amd64 e2e-darwin-amd64 e2e-windows-amd64.exe ## End-to-end 
 .PHONY: checksum
 checksum: ## Generate checksums
 	for f in out/minikube.iso out/minikube-linux-amd64 minikube-linux-arm64 \
+		 out/minikube-linux-s390x \
 		 out/minikube-darwin-amd64 out/minikube-windows-amd64.exe \
 		 out/docker-machine-driver-kvm2 out/docker-machine-driver-hyperkit; do \
 		if [ -f "$${f}" ]; then \
@@ -409,13 +414,14 @@ out/repodata/repomd.xml: out/minikube-$(RPM_VERSION).rpm
 .SECONDEXPANSION:
 TAR_TARGETS_linux-amd64   := out/minikube-linux-amd64 out/docker-machine-driver-kvm2
 TAR_TARGETS_linux-arm64   := out/minikube-linux-arm64
+TAR_TARGETS_linux-s390x   := out/minikube-linux-s390x
 TAR_TARGETS_darwin-amd64  := out/minikube-darwin-amd64 out/docker-machine-driver-hyperkit
 TAR_TARGETS_windows-amd64 := out/minikube-windows-amd64.exe
 out/minikube-%.tar.gz: $$(TAR_TARGETS_$$*)
 	tar -cvzf $@ $^
 
 .PHONY: cross-tars
-cross-tars: out/minikube-linux-amd64.tar.gz out/minikube-linux-arm64.tar.gz \ ## Cross-compile minikube
+cross-tars: out/minikube-linux-amd64.tar.gz out/minikube-linux-arm64.tar.gz out/minikube-linux-s390x.tar.gz \ ## Cross-compile minikube
 	    out/minikube-windows-amd64.tar.gz out/minikube-darwin-amd64.tar.gz
 	-cd out && $(SHA512SUM) *.tar.gz > SHA512SUM
 
