@@ -170,9 +170,6 @@ out/minikube-linux-x86_64: out/minikube-linux-amd64
 out/minikube-linux-aarch64: out/minikube-linux-arm64
 	cp $< $@
 
-out/minikube-linux-s390x: out/minikube-linux-s390x
-	cp $< $@
-
 .PHONY: minikube-linux-amd64 minikube-linux-arm64 minikube-linux-s390x minikube-darwin-amd64 minikube-windows-amd64.exe 
 minikube-linux-amd64: out/minikube-linux-amd64 ## Build Minikube for Linux 64bit
 minikube-linux-arm64: out/minikube-linux-arm64 ## Build Minikube for ARM 64bit
